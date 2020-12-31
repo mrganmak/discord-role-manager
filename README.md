@@ -15,24 +15,25 @@ const client = new Discord.Client();
 const { RoleManger } = require('discord-role-manager') // get npm;
 
 const roleManger = new RoleManger(client, {
-	configPath: './roleConfig.json',
+	storagePath: './roleStorage.json',
 	localization: 'en' //Available localization is: ru; en. If you want to change localization or add your own language, go to the package dir and change localization.json
 });
+client.roleManger = roleManger;
 
 client.on('message', message => {
-	if (message.content.startsWith('!addRole')) roleManger.addRole(message).catch(errorMessage => {
+	if (message.content.startsWith('!addRole')) client.roleManger.addRole(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
-	}); //Add new role to ./roleConfig.json and catch eroor message
-	else if (message.content.startsWith('!giveRoleToUser')) roleManger.giveRoleToUser(message).catch(errorMessage => {
+	}); //Add new role to ./roleStorage.json and catch eroor message
+	else if (message.content.startsWith('!giveRoleToUser')) client.roleManger.giveRoleToUser(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
 	}); //Give role to user and catch eroor message
-	else if (message.content.startsWith('!removeRoleFromUser')) roleManger.removeRoleFromUser(message).catch(errorMessage => {
+	else if (message.content.startsWith('!removeRoleFromUser')) client.roleManger.removeRoleFromUser(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
 	}); //remove role from user and catch eroor message
-	else if (message.content.startsWith('!removeRole')) roleManger.removeRole(message).catch(errorMessage => {
+	else if (message.content.startsWith('!removeRole')) client.roleManger.removeRole(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
-	}); //Remove role from ./roleConfig.json and catch eroor message
-	else if (message.content.startsWith('!changeRoleAdmitUsers')) roleManger.changeRoleAdmitUsers(message).catch(errorMessage => {
+	}); //Remove role from ./roleStorage.json and catch eroor message
+	else if (message.content.startsWith('!changeRoleAdmitUsers')) client.roleManger.changeRoleAdmitUsers(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
 	}); //Chnage same role admit users.
 });
