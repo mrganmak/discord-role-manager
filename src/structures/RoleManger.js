@@ -1,3 +1,4 @@
+const localization = require('../localization.json');
 const { EventEmitter } = require('events');
 const Role = require('./Role.js');
 const fs = require('fs');
@@ -6,13 +7,18 @@ module.exports = class RoleManger extends EventEmitter {
 	constructor(client, opts = { }) {
 		if (!client) throw new SyntaxError('Invalid discord client!');
 		if (!opts.configPath) throw new SyntaxError('Invalid config path!');
+		if (!opts.localization) opts.localization =  'en'
+
+		opts.localization = localization[opts.localization];
+
+		if (!opts.localization) throw new SyntaxError('Invalid localization name!');
 
 		super();
 
 		this._roles = { };
-		this.opts = opts;
+		this._opts = opts;
 		this.client = client;
-		this._config = JSON.parse(fs.readFileSync(this.opts.configPath));
+		this._config = JSON.parse(fs.readFileSync(this._opts.configPath));
 
 		for (const [guildId, data] of Object.entries(this._config)) {
 			for (const [roleId, values] of Object.entries(data)) {
@@ -24,17 +30,29 @@ module.exports = class RoleManger extends EventEmitter {
 	}
 
 	addRole(message) {
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
 			const guildRoles = message.guild.roles.cache;
 			const guildId = message.guild.id;
+			let errorMessage = undefined;
 	
-			if (messageContent.length < 2) reject(new Error('Invalid argument count!'));
+			if (messageContent.length < 2) {
+				errorMessage = await message.reply(this._opts.localization.argumentCountError);
+
+				return reject(errorMessage);
+			};
 	
 			const roleId = this._getRoleId(messageContent[0]);
 	
-			if (!roleId || !guildRoles.has(roleId)) reject(new Error('Invalid role id!'));
-			if (this._config[roleId]) reject(new Error('This role has already exist!'));
+			if (!roleId || !guildRoles.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (this._config[guildId][roleId]) {
+				errorMessage = await message.reply(this._opts.localization.roleAlreadyExist);
+
+				return reject(errorMessage);
+			};
 	
 			messageContent = messageContent.slice(1);
 			const usersList = [];
@@ -59,18 +77,33 @@ module.exports = class RoleManger extends EventEmitter {
 	}
 
 	removeRole(message) {
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
 			const guildRoles = message.guild.roles.cache;
 			const guildId = message.guild.id;
+			let errorMessage = undefined;
 
-			if (messageContent.length < 1) reject(new Error('Invalid argument count!'));
+			if (messageContent.length < 1) {
+				errorMessage = await message.reply(this._opts.localization.argumentCountError);
+
+				return reject(errorMessage);
+			}
 	
 			const roleId = this._getRoleId(messageContent[0]);
 	
-			if (!roleId || !guildRoles.has(roleId)) reject(new Error('Invalid role id!'));
-			if (!this._config[guildId]) reject(new Error('There are no roles in this guild!'));
-			if (!this._config[guildId][roleId]) reject(new Error('This role doesn\'t exist yet!'));
+			if (!roleId || !guildRoles.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId]) {
+				errorMessage = await message.reply(this._opts.localization.guildDontHaveRoles);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId][roleId]) {
+				errorMessage = await message.reply(this._opts.localization.roleDoesntExist);
+
+				return reject(errorMessage)
+			}
 	
 			delete this._config[guildId][roleId];
 			delete this._roles[guildId][roleId];
@@ -81,19 +114,34 @@ module.exports = class RoleManger extends EventEmitter {
 	}
 
 	changeRoleAdmitUsers(message) {
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
 			const guildRoles = message.guild.roles.cache;
 			const guildId = message.guild.id;
+			let errorMessage = undefined;
 
-			if (messageContent.length < 2) reject(new Error('Invalid argument count!'));
+			if (messageContent.length < 2) {
+				errorMessage = await message.reply(this._opts.localization.argumentCountError);
+
+				return reject(errorMessage);
+			}
 			
 			const roleId = this._getRoleId(messageContent[0]);
 			messageContent = messageContent.slice(1);
 
-			if (!roleId || !guildRoles.has(roleId)) reject(new Error('Invalid role id!'));
-			if (!this._config[guildId]) reject(new Error('There are no roles in this guild!'));
-			if (!this._config[guildId][roleId]) reject(new Error('This role doesn\'t exist yet!'));
+			if (!roleId || !guildRoles.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId]) {
+				errorMessage = await message.reply(this._opts.localization.guildDontHaveRoles);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId][roleId]) {
+				errorMessage = await message.reply(this._opts.localization.roleDoesntExist);
+
+				return reject(errorMessage)
+			}
 	
 			const usersList = [];
 	
@@ -114,27 +162,49 @@ module.exports = class RoleManger extends EventEmitter {
 	}
 
 	removeRoleFromUser(message) {
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
 			const guildRoles = message.guild.roles.cache;
 			const guildMembers = message.guild.members.cache;
 			const guildId = message.guild.id;
+			let errorMessage = undefined;
 
-			if (messageContent.length < 2) reject(new Error('Invalid argument count!'));
+			if (messageContent.length < 2) {
+				errorMessage = await message.reply(this._opts.localization.argumentCountError);
+
+				return reject(errorMessage);
+			}
 	
 			const roleId = this._getRoleId(messageContent[0]);
 	
-			if (!roleId || !guildRoles.has(roleId)) reject(new Error('Invalid role id!'));
-			if (!this._roles[guildId][roleId]) reject(new Error('This role doesn\'t exist yet!'));
-			if (!this._roles[guildId][roleId].checkUser(message.author.id)) reject(new Error('This user doesn\'t have permissions'));
+			if (!roleId || !guildRoles.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (!this._roles[guildId][roleId]) {
+				errorMessage = await message.reply(this._opts.localization.roleDoesntExist);
+
+				return reject(errorMessage);
+			} else if (!this._roles[guildId][roleId].checkUser(message.author.id)) {
+				errorMessage = await message.reply(this._opts.localization.userDoesntHavePermission);
+
+				return reject(errorMessage);
+			}
 
 			messageContent = messageContent.slice(1);
 			const userId = this._getUserId(messageContent[0]);
 			const member = guildMembers.get(userId);
 			const role = guildRoles.get(roleId);
 
-			if (!member) reject(new Error('Invalid user id!'));
-			if (!member.roles.cache.has(roleId)) reject(new Error('This user doesn\'t have this role'));
+			if (!member) {
+				errorMessage = await message.reply(this._opts.localization.invalidUserId);
+
+				return reject(errorMessage);
+			} else if (!member.roles.cache.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.userDoesntHaveRole);
+
+				return reject(errorMessage);
+			}
 
 			member.roles.remove(role);
 			this.emit('removedRoleFromUser', message.member, member, role);
@@ -143,27 +213,49 @@ module.exports = class RoleManger extends EventEmitter {
 	}
 
 	giveRoleToUser(message) {
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
 			const guildRoles = message.guild.roles.cache;
 			const guildMembers = message.guild.members.cache;
 			const guildId = message.guild.id;
+			let errorMessage = undefined;
 
-			if (messageContent.length < 2) reject(new Error('Invalid argument count!'));
+			if (messageContent.length < 2) {
+				errorMessage = await message.reply(this._opts.localization.argumentCountError);
+
+				return reject(errorMessage);
+			}
 	
 			const roleId = this._getRoleId(messageContent[0]);
 	
-			if (!roleId || !guildRoles.has(roleId)) reject(new Error('Invalid role id!'));
-			if (!this._roles[guildId][roleId]) reject(new Error('This role doesn\'t exist yet!'));
-			if (!this._roles[guildId][roleId].checkUser(message.author.id)) reject(new Error('This user doesn\'t have permissions'));
+			if (!roleId || !guildRoles.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (!this._roles[guildId][roleId]) {
+				errorMessage = await message.reply(this._opts.localization.roleDoesntExist);
+
+				return reject(errorMessage);
+			} else if (!this._roles[guildId][roleId].checkUser(message.author.id)) {
+				errorMessage = await message.reply(this._opts.localization.userDoesntHavePermission);
+
+				return reject(errorMessage);
+			}
 
 			messageContent = messageContent.slice(1);
 			const userId = this._getUserId(messageContent[0]);
 			const member = guildMembers.get(userId);
 			const role = guildRoles.get(roleId);
 
-			if (!member) reject(new Error('Invalid user id!'));
-			if (member.roles.cache.has(roleId)) reject(new Error('This user already have this role'));
+			if (!member) {
+				errorMessage = await message.reply(this._opts.localization.invalidUserId);
+
+				return reject(errorMessage);
+			} else if (member.roles.cache.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.userAlreadyHaveRole);
+
+				return reject(errorMessage);
+			}
 
 			member.roles.add(role);
 			this.emit('addedRoleToUser', message.member, member, role);
@@ -180,6 +272,6 @@ module.exports = class RoleManger extends EventEmitter {
 	}
 
 	_saveData() {
-		fs.writeFileSync(this.opts.configPath, JSON.stringify(this._config, null, 4));
+		fs.writeFileSync(this._opts.configPath, JSON.stringify(this._config, null, 4));
 	}
 }

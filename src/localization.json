@@ -1,0 +1,25 @@
+{
+	"en": {
+		"argumentCountError": "invalid argument count!",
+		"invalidRoleId": "I can't find such a role!",
+		"roleAlreadyExist": "this role has already exist in me list! Try to use change role command.",
+		"roleDoesntExist": "this role doesn't exist yet!",
+		"guildDontHaveRoles": "there are no roles in this guild!",
+		"userDoesntHavePermission": "you don't have permission for this action!",
+		"invalidUserId": "i can't find this user!",
+		"userDoesntHaveRole": "this user doesn't have this role!",
+		"userAlreadyHaveRole": "this user already have this role!"
+	},
+
+	"ru": {
+		"argumentCountError": "введено неверное количество аргументов!",
+		"invalidRoleId": "я не могу найти такую роль!",
+		"roleAlreadyExist": "эта роль уже есть в моём списке! Попробуйте использовать команду для изменения роли.",
+		"roleDoesntExist": "этой роли ещё нет в моём списке!",
+		"guildDontHaveRoles": "в этой роли нет ролей!",
+		"userDoesntHavePermission": "у вас нет привилегий для этого действия!",
+		"invalidUserId": "я не могу найти этого пользователя!",
+		"userDoesntHaveRole": "у этого пользователя нет этой роли!",
+		"userAlreadyHaveRole": "у этого пользователя уже есть эта роль!"
+	}
+}
