@@ -1,0 +1,29 @@
+{
+  "name": "discord-role-manager",
+  "version": "1.0.0",
+  "description": "A simple discrod role manager, which will allow verified users to assign certain roles to other users.",
+  "main": "./src/index.js",
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrganmak/discord-role-manager.git"
+  },
+  "keywords": [
+    "discord-role-manager",
+    "discordRole",
+    "role-manager",
+    "discord.js"
+  ],
+  "author": "mrganmak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrganmak/discord-role-manager/issues"
+  },
+  "homepage": "https://github.com/mrganmak/discord-role-manager#readme"
+}
