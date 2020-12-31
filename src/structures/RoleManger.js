@@ -6,7 +6,7 @@ const fs = require('fs');
 module.exports = class RoleManger extends EventEmitter {
 	constructor(client, opts = { }) {
 		if (!client) throw new SyntaxError('Invalid discord client!');
-		if (!opts.configPath) throw new SyntaxError('Invalid config path!');
+		if (!opts.storagePath) throw new SyntaxError('Invalid config path!');
 		if (!opts.localization) opts.localization =  'en'
 
 		opts.localization = localization[opts.localization];
@@ -18,7 +18,7 @@ module.exports = class RoleManger extends EventEmitter {
 		this._roles = { };
 		this._opts = opts;
 		this.client = client;
-		this._config = JSON.parse(fs.readFileSync(this._opts.configPath));
+		this._config = JSON.parse(fs.readFileSync(this._opts.storagePath));
 
 		for (const [guildId, data] of Object.entries(this._config)) {
 			for (const [roleId, values] of Object.entries(data)) {
@@ -165,7 +165,7 @@ module.exports = class RoleManger extends EventEmitter {
 		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
 			const guildRoles = message.guild.roles.cache;
-			const guildMembers = message.guild.members.cache;
+			const guildMembers = message.guild.members;
 			const guildId = message.guild.id;
 			let errorMessage = undefined;
 
@@ -193,7 +193,14 @@ module.exports = class RoleManger extends EventEmitter {
 
 			messageContent = messageContent.slice(1);
 			const userId = this._getUserId(messageContent[0]);
-			const member = guildMembers.get(userId);
+
+			if (!userId) {
+				errorMessage = await message.reply(this._opts.localization.invalidUserId);
+
+				return reject(errorMessage);
+			}
+
+			const member = await guildMembers.fetch(userId);
 			const role = guildRoles.get(roleId);
 
 			if (!member) {
@@ -216,7 +223,7 @@ module.exports = class RoleManger extends EventEmitter {
 		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
 			const guildRoles = message.guild.roles.cache;
-			const guildMembers = message.guild.members.cache;
+			const guildMembers = message.guild.members;
 			const guildId = message.guild.id;
 			let errorMessage = undefined;
 
@@ -244,7 +251,14 @@ module.exports = class RoleManger extends EventEmitter {
 
 			messageContent = messageContent.slice(1);
 			const userId = this._getUserId(messageContent[0]);
-			const member = guildMembers.get(userId);
+
+			if (!userId) {
+				errorMessage = await message.reply(this._opts.localization.invalidUserId);
+
+				return reject(errorMessage);
+			}
+
+			const member = await guildMembers.fetch(userId);
 			const role = guildRoles.get(roleId);
 
 			if (!member) {
