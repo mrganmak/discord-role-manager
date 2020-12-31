@@ -23,16 +23,16 @@ client.roleManger = roleManger;
 client.on('message', message => {
 	if (message.content.startsWith('!addRole')) client.roleManger.addRole(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
-	}); //Add new role to ./roleStorage.json and catch eroor message
+	}); //Add new role to ./roleStorage.json and catch error message
 	else if (message.content.startsWith('!giveRoleToUser')) client.roleManger.giveRoleToUser(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
-	}); //Give role to user and catch eroor message
+	}); //Give role to user and catch error message
 	else if (message.content.startsWith('!removeRoleFromUser')) client.roleManger.removeRoleFromUser(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
-	}); //remove role from user and catch eroor message
+	}); //remove role from user and catch error message
 	else if (message.content.startsWith('!removeRole')) client.roleManger.removeRole(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
-	}); //Remove role from ./roleStorage.json and catch eroor message
+	}); //Remove role from ./roleStorage.json and catch error message
 	else if (message.content.startsWith('!changeRoleAdmitUsers')) client.roleManger.changeRoleAdmitUsers(message).catch(errorMessage => {
 		errorMessage.delete({ timeout: 1000 });
 	}); //Chnage same role admit users.
