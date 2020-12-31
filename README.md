@@ -1,11 +1,11 @@
 # discord-role-manager
 A simple discrod role manager, which will allow verified users to assign certain roles to other users.
-This script will help you to manage role in text role play discrod server or othe servers, who need to have a role leader.
+This script will help you to manage role in text role play discrod server or other servers, who need to have a role leader.
 
 # FiveM-API
 ## Installation 
 ```
-  npm i fivem-api.js --save
+  npm i discord-role-manager --save
 ```
 
 ## Usage
