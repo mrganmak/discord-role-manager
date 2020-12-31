@@ -10,37 +10,46 @@ This script will help you to manage role in text role play discrod server or oth
 
 ## Usage
 ```js
-const Discord = require('discord.js');
-const client = new Discord.Client();
-const { RoleManger } = require('discord-role-manager') // get npm;
+	const Discord = require('discord.js');
+	const client = new Discord.Client();
+	const { RoleManger } = require('discord-role-manager') // get npm;
 
-const roleManger = new RoleManger(client, {
-	storagePath: './roleStorage.json',
-	localization: 'en' //Available localization is: ru; en. If you want to change localization or add your own language, go to the package dir and change localization.json
-});
-client.roleManger = roleManger;
+	const roleManger = new RoleManger(client, {
+		storagePath: './roleStorage.json',
+		localization: 'en' //Available localization is: ru; en. If you want to change localization or add your own language, go to the package dir and change localization.json
+	});
+	client.roleManger = roleManger;
 
-client.on('message', message => {
-	if (message.content.startsWith('!addRole')) client.roleManger.addRole(message).catch(errorMessage => {
-		errorMessage.delete({ timeout: 1000 });
-	}); //Add new role to ./roleStorage.json and catch error message
-	else if (message.content.startsWith('!giveRoleToUser')) client.roleManger.giveRoleToUser(message).catch(errorMessage => {
-		errorMessage.delete({ timeout: 1000 });
-	}); //Give role to user and catch error message
-	else if (message.content.startsWith('!removeRoleFromUser')) client.roleManger.removeRoleFromUser(message).catch(errorMessage => {
-		errorMessage.delete({ timeout: 1000 });
-	}); //remove role from user and catch error message
-	else if (message.content.startsWith('!removeRole')) client.roleManger.removeRole(message).catch(errorMessage => {
-		errorMessage.delete({ timeout: 1000 });
-	}); //Remove role from ./roleStorage.json and catch error message
-	else if (message.content.startsWith('!changeRoleAdmitUsers')) client.roleManger.changeRoleAdmitUsers(message).catch(errorMessage => {
-		errorMessage.delete({ timeout: 1000 });
-	}); //Chnage same role admit users.
-});
+	client.on('message', message => {
+		if (message.content.startsWith('!addRole')) client.roleManger.addRole(message).catch(errorMessage => {
+			errorMessage.delete({ timeout: 1000 });
+		}); //Add new role to ./roleStorage.json and catch error message
+		else if (message.content.startsWith('!giveRoleToUser')) client.roleManger.giveRoleToUser(message).catch(errorMessage => {
+			errorMessage.delete({ timeout: 1000 });
+		}); //Give role to user and catch error message
+		else if (message.content.startsWith('!removeRoleFromUser')) client.roleManger.removeRoleFromUser(message).catch(errorMessage => {
+			errorMessage.delete({ timeout: 1000 });
+		}); //remove role from user and catch error message
+		else if (message.content.startsWith('!removeRole')) client.roleManger.removeRole(message).catch(errorMessage => {
+			errorMessage.delete({ timeout: 1000 });
+		}); //Remove role from ./roleStorage.json and catch error message
+		else if (message.content.startsWith('!changeRoleAdmitUsers')) client.roleManger.changeRoleAdmitUsers(message).catch(errorMessage => {
+			errorMessage.delete({ timeout: 1000 });
+		}); //Chnage same role admit users.
+	});
 
-client.login('YOT_BOT_TOKEN_HERE');
+	client.login('YOT_BOT_TOKEN_HERE');
 ```
 
+## Discord usage
+```
+Creat new role, and set admit user.
+```
+![](images/usage(2).png "Creat new role, and set admit user.")
+```
+Now this user can get this rol to other users.
+```
+![](images/usage.png "Now this user can get this rol to other users.")
 ## All Classes
   **index**
   - RoleManger - RoleManger class
