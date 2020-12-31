@@ -47,7 +47,7 @@ Creat new role, and set admit user.
 ```
 ![](images/usage(2).png "Creat new role, and set admit user.")
 ```
-Now this user can get this rol to other users.
+Now this user can get this role to other users.
 ```
 ![](images/usage.png "Now this user can get this rol to other users.")
 ## All Classes
