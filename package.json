@@ -1,6 +1,6 @@
 {
   "name": "discord-role-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple discrod role manager, which will allow verified users to assign certain roles to other users.",
   "main": "./src/index.js",
   "dependencies": {
