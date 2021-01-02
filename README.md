@@ -90,33 +90,33 @@ Now this user can get this role to other users.
   
  ## All functions
   **RoleManger**
-  - addRole(message) - Add new role to ./roleConfig.json. return new Promise(resolve(string), reject(errorMessage))
+  - addRole(message) - Add new role to ./roleConfig.json. return new Promise(resolve(Object), reject(errorMessage))
   ```
 	Discord message example:
 	!addRole @role @user1 @user2 @user3....
 	
 	@user1 and others it's admit users (users, who can use removeRoleFromUser and giveRoleToUser for this current role)
   ```
-  - removeRole(message) - Remove role from ./roleConfig.json. return new Promise(resolve(string), reject(errorMessage))
+  - removeRole(message) - Remove role from ./roleConfig.json. return new Promise(resolve(Object), reject(errorMessage))
   ```
 	Discord message example:
 	!removeRole @role
   ```
-  - changeRoleAdmitUsers(message) - Change existing role admit users. return new Promise(resolve(string), reject(errorMessage))
+  - changeRoleAdmitUsers(message) - Change existing role admit users. return new Promise(resolve(Object), reject(errorMessage))
   ```
 	Discord message example:
 	!changeRoleAdmitUsers @role @user1 @user2 @user3....
 	
 	@user1 and others it's admit users (users, who can use removeRoleFromUser and giveRoleToUser for this current role)
   ```
-  - giveRoleToUser - Give role to the user. return new Promise(resolve(string), reject(errorMessage))
+  - giveRoleToUser - Give role to the user. return new Promise(resolve(Object), reject(errorMessage))
   ```
 	Discord message example:
 	!giveRoleToUser @role @user
 	
 	available only for this role admit user
   ```
-  - removeRoleFromUser - Remove role from user. return new Promise(resolve(string), reject(errorMessage))
+  - removeRoleFromUser - Remove role from user. return new Promise(resolve(Object), reject(errorMessage))
   ```
 	Discord message example:
 	!removeRoleFromUser @role @user
