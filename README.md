@@ -15,27 +15,39 @@ const client = new Discord.Client();
 const { RoleManger } = require('discord-role-manager') // get npm;
 
 const roleManger = new RoleManger(client, {
-  storagePath: './roleStorage.json',
-  localization: 'en' //Available localization is: ru; en. If you want to change localization or add your own language, go to the package dir and change localization.json
+	storagePath: './roleStorage.json',
+	localization: 'en' //Available localization is: ru; en. If you want to change localization or add your own language, go to the package dir and change localization.json
 });
 client.roleManger = roleManger;
 
 client.on('message', message => {
-  if (message.content.startsWith('!addRole')) client.roleManger.addRole(message).catch(errorMessage => {
-	errorMessage.delete({ timeout: 1000 });
-  }); //Add new role to ./roleStorage.json and catch error message
-  else if (message.content.startsWith('!giveRoleToUser')) client.roleManger.giveRoleToUser(message).catch(errorMessage => {
-	errorMessage.delete({ timeout: 1000 });
-  }); //Give role to user and catch error message
-  else if (message.content.startsWith('!removeRoleFromUser')) client.roleManger.removeRoleFromUser(message).catch(errorMessage => {
-	errorMessage.delete({ timeout: 1000 });
-  }); //remove role from user and catch error message
-  else if (message.content.startsWith('!removeRole')) client.roleManger.removeRole(message).catch(errorMessage => {
-	errorMessage.delete({ timeout: 1000 });
-  }); //Remove role from ./roleStorage.json and catch error message
-  else if (message.content.startsWith('!changeRoleAdmitUsers')) client.roleManger.changeRoleAdmitUsers(message).catch(errorMessage => {
-	errorMessage.delete({ timeout: 1000 });
-  }); //Chnage same role admit users.
+	if (message.content.startsWith('!addRole')) client.roleManger.addRole(message).catch(errorMessage => {
+		errorMessage.delete({ timeout: 1000 });
+	}); //Add new role to ./roleStorage.json and catch eroor message
+	else if (message.content.startsWith('!giveRoleToUser')) client.roleManger.giveRoleToUser(message).catch(errorMessage => {
+		errorMessage.delete({ timeout: 1000 });
+	}); //Give role to user and catch eroor message
+	else if (message.content.startsWith('!removeRoleFromUser')) client.roleManger.removeRoleFromUser(message).catch(errorMessage => {
+		errorMessage.delete({ timeout: 1000 });
+	}); //remove role from user and catch eroor message
+	else if (message.content.startsWith('!removeRole')) client.roleManger.removeRole(message).catch(errorMessage => {
+		errorMessage.delete({ timeout: 1000 });
+	}); //Remove role from ./roleStorage.json and catch eroor message
+	else if (message.content.startsWith('!changeRoleAdmitUsers')) client.roleManger.changeRoleAdmitUsers(message).catch(errorMessage => {
+		errorMessage.delete({ timeout: 1000 });
+	}); //Change same role admit users.
+	else if (message.content.startsWith('!getRoleInfo')) client.roleManger.getRoleInfo(message)
+		.then(info => {
+			console.log(info);
+		}).catch(errorMessage => {
+			errorMessage.delete({ timeout: 1000 });
+		}); //Get and log role info.
+	else if (message.content.startsWith('!getUserAdmitRoles')) client.roleManger.getUserAdmitRoles(message)
+		.then(info => {
+			console.log(info);
+		}).catch(errorMessage => {
+			errorMessage.delete({ timeout: 1000 });
+		}); //Get and log roles where user have admit permissions.
 });
 
 client.login('YOUR_BOT_TOKEN_HERE');
@@ -108,6 +120,16 @@ Now this user can get this role to other users.
 	!changeRoleAdmitUsers @role @user1 @user2 @user3....
 	
 	@user1 and others it's admit users (users, who can use removeRoleFromUser and giveRoleToUser for this current role)
+  ```
+  - getRoleInfo - Return info about role. return new Promise(resolve(Object), reject(errorMessage))
+  ```
+	Discord message example:
+	!getRoleInfo @role
+  ```
+  - getUserAdmitRoles - Return info about all roles, where user have admit permissions. return new Promise(resolve(Array), reject(errorMessage))
+  ```
+	Discord message example:
+	!getRoleInfo @user
   ```
   - giveRoleToUser - Give role to the user. return new Promise(resolve(string), reject(errorMessage))
   ```
