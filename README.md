@@ -126,6 +126,7 @@ Now this user can get this role to other users.
   
 ## RoleManger opts
   - storagePath = string - path to your storage.json file.
+	- rolesData = Object - this opts need you, if you use third-party databases. Warning storagePath replaces this parameter.
   - localization = string - localization language (en by default). Available localization is: ru; en. If you want to change localization or add your own language, go to the package dir and change localization.json
  
 ## Events
