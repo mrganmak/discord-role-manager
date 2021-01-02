@@ -38,7 +38,7 @@ client.on('message', message => {
   }); //Chnage same role admit users.
 });
 
-client.login('YOT_BOT_TOKEN_HERE');
+client.login('YOUR_BOT_TOKEN_HERE');
 ```
 **if you want to use third-party databases**
 ```js
@@ -72,7 +72,7 @@ client.on('message', message => {
 		});
 });
 
-client.login('YOT_BOT_TOKEN_HERE');
+client.login('YOUR_BOT_TOKEN_HERE');
 ```
 
 ## Discord usage
