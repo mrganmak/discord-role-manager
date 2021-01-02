@@ -164,6 +164,76 @@ module.exports = class RoleManger extends EventEmitter {
 		});
 	}
 
+	getRoleInfo(message) {
+		return new Promise(async (resolve, reject) => {
+			let messageContent = message.content.split(' ').slice(1);
+			const guildRoles = message.guild.roles.cache;
+			const guildId = message.guild.id;
+			let errorMessage = undefined;
+
+			if (messageContent.length < 1) {
+				errorMessage = await message.reply(this._opts.localization.argumentCountError);
+
+				return reject(errorMessage);
+			}
+	
+			const roleId = this._getRoleId(messageContent[0]);
+	
+			if (!roleId || !guildRoles.has(roleId)) {
+				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId]) {
+				errorMessage = await message.reply(this._opts.localization.guildDontHaveRoles);
+
+				return reject(errorMessage);
+			} else if (!this._roles[guildId][roleId]) {
+				errorMessage = await message.reply(this._opts.localization.roleDoesntExist);
+
+				return reject(errorMessage);
+			}
+
+			resolve({
+				roleId: roleId,
+				admitUsers: this._config[guildId][roleId].admitUsers
+			});
+		});
+	}
+
+	getUserAdmitRoles(message) {
+		return new Promise(async (resolve, reject) => {
+			let messageContent = message.content.split(' ').slice(1);
+			let errorMessage = undefined;
+			const guildId = message.guild.id;
+
+			if (messageContent.length < 1) {
+				errorMessage = await message.reply(this._opts.localization.argumentCountError);
+
+				return reject(errorMessage);
+			}
+
+			const userId = this._getUserId(messageContent[0]);
+
+			if (!userId) {
+				errorMessage = await message.reply(this._opts.localization.invalidUserId);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId]) {
+				errorMessage = await message.reply(this._opts.localization.guildDontHaveRoles);
+
+				return reject(errorMessage);
+			}
+
+			const rolesList = [];
+
+			for (const currentRole of Object.values(this._roles[guildId])) {
+				if (currentRole.checkUser(userId)) rolesList.push(currentRole.roleId);
+			}
+
+			resolve(rolesList.length >= 1 ? rolesList : undefined);
+		});
+	}
+
 	removeRoleFromUser(message) {
 		return new Promise(async (resolve, reject) => {
 			let messageContent = message.content.split(' ').slice(1);
@@ -182,6 +252,10 @@ module.exports = class RoleManger extends EventEmitter {
 	
 			if (!roleId || !guildRoles.has(roleId)) {
 				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId]) {
+				errorMessage = await message.reply(this._opts.localization.guildDontHaveRoles);
 
 				return reject(errorMessage);
 			} else if (!this._roles[guildId][roleId]) {
@@ -240,6 +314,10 @@ module.exports = class RoleManger extends EventEmitter {
 	
 			if (!roleId || !guildRoles.has(roleId)) {
 				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
+
+				return reject(errorMessage);
+			} else if (!this._config[guildId]) {
+				errorMessage = await message.reply(this._opts.localization.guildDontHaveRoles);
 
 				return reject(errorMessage);
 			} else if (!this._roles[guildId][roleId]) {
