@@ -6,7 +6,7 @@ const fs = require('fs');
 module.exports = class RoleManger extends EventEmitter {
 	constructor(client, opts = { }) {
 		if (!client) throw new SyntaxError('Invalid discord client!');
-		if (!opts.storagePath) throw new SyntaxError('Invalid config path!');
+		if (!opts.storagePath && !opts.rolesData) throw new SyntaxError('Invalid storage!');
 		if (!opts.localization) opts.localization =  'en'
 
 		opts.localization = localization[opts.localization];
@@ -17,8 +17,11 @@ module.exports = class RoleManger extends EventEmitter {
 
 		this._roles = { };
 		this._opts = opts;
+
+		if (opts.storagePath) this._opts.saveData = true;
+
+		this._config = opts.storagePath ? JSON.parse(fs.readFileSync(this._opts.storagePath)) : opts.rolesData;
 		this.client = client;
-		this._config = JSON.parse(fs.readFileSync(this._opts.storagePath));
 
 		for (const [guildId, data] of Object.entries(this._config)) {
 			for (const [roleId, values] of Object.entries(data)) {
@@ -43,7 +46,8 @@ module.exports = class RoleManger extends EventEmitter {
 			};
 	
 			const roleId = this._getRoleId(messageContent[0]);
-	
+
+			if (!this._config[guildId]) this._config[guildId] = { };
 			if (!roleId || !guildRoles.has(roleId)) {
 				errorMessage = await message.reply(this._opts.localization.invalidRoleId);
 
@@ -65,14 +69,13 @@ module.exports = class RoleManger extends EventEmitter {
 				usersList.push(fixedId); 
 			}
 	
-			if (!this._config[guildId]) this._config[guildId] = { };
 			if (!this._roles[guildId]) this._roles[guildId] = { };
 
 			this._config[guildId][roleId] = { admitUsers: usersList };
 			this._roles[guildId][roleId] = new Role(roleId, { admitUsers: usersList });
 	
 			this._saveData();
-			resolve('all done');
+			resolve({ roleId: roleId, admitUsers: usersList });
 		});
 	}
 
@@ -109,7 +112,7 @@ module.exports = class RoleManger extends EventEmitter {
 			delete this._roles[guildId][roleId];
 	
 			this._saveData();
-			resolve('all done');
+			resolve(roleId);
 		});
 	}
 
@@ -157,7 +160,7 @@ module.exports = class RoleManger extends EventEmitter {
 			this._roles[guildId][roleId].changeRole('_admitUsers', usersList);
 	
 			this._saveData();
-			resolve('all done');
+			resolve({ roleId: roleId, admitUsers: usersList });
 		});
 	}
 
@@ -286,6 +289,6 @@ module.exports = class RoleManger extends EventEmitter {
 	}
 
 	_saveData() {
-		fs.writeFileSync(this._opts.configPath, JSON.stringify(this._config, null, 4));
+		if (this._opts.saveData) fs.writeFileSync(this._opts.storagePath, JSON.stringify(this._config, null, 4));
 	}
 }
