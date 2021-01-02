@@ -109,14 +109,14 @@ Now this user can get this role to other users.
 	
 	@user1 and others it's admit users (users, who can use removeRoleFromUser and giveRoleToUser for this current role)
   ```
-  - giveRoleToUser - Give role to the user. return new Promise(resolve(Object), reject(errorMessage))
+  - giveRoleToUser - Give role to the user. return new Promise(resolve(string), reject(errorMessage))
   ```
 	Discord message example:
 	!giveRoleToUser @role @user
 	
 	available only for this role admit user
   ```
-  - removeRoleFromUser - Remove role from user. return new Promise(resolve(Object), reject(errorMessage))
+  - removeRoleFromUser - Remove role from user. return new Promise(resolve(string), reject(errorMessage))
   ```
 	Discord message example:
 	!removeRoleFromUser @role @user
